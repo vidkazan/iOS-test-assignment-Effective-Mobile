@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D6125062C93236D00CFC179 /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6125022C93236D00CFC179 /* CDUser+CoreDataClass.swift */; };
-		7D6125072C93236D00CFC179 /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6125032C93236D00CFC179 /* CDUser+CoreDataProperties.swift */; };
-		7D6125082C93236D00CFC179 /* CDTodoItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6125042C93236D00CFC179 /* CDTodoItem+CoreDataClass.swift */; };
-		7D6125092C93236D00CFC179 /* CDTodoItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6125052C93236D00CFC179 /* CDTodoItem+CoreDataProperties.swift */; };
+		7D5BA8D32C9447C500DE2A4A /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8CF2C9447C500DE2A4A /* CDUser+CoreDataClass.swift */; };
+		7D5BA8D42C9447C500DE2A4A /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */; };
+		7D5BA8D52C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */; };
+		7D5BA8D62C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D22C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift */; };
 		7D922D3E2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D922D3D2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift */; };
 		7D922D402C931A1800A9E43F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D922D3F2C931A1800A9E43F /* ContentView.swift */; };
 		7D922D422C931A1900A9E43F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D922D412C931A1900A9E43F /* Assets.xcassets */; };
@@ -20,10 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7D6125022C93236D00CFC179 /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
-		7D6125032C93236D00CFC179 /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		7D6125042C93236D00CFC179 /* CDTodoItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataClass.swift"; sourceTree = "<group>"; };
-		7D6125052C93236D00CFC179 /* CDTodoItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7D5BA8CF2C9447C500DE2A4A /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
+		7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		7D5BA8D22C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7D922D3A2C931A1800A9E43F /* Todo-EffectiveMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Todo-EffectiveMobile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D922D3D2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo_EffectiveMobileApp.swift; sourceTree = "<group>"; };
 		7D922D3F2C931A1800A9E43F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -49,10 +49,10 @@
 		7D61250A2C93237200CFC179 /* managedObjects */ = {
 			isa = PBXGroup;
 			children = (
-				7D6125022C93236D00CFC179 /* CDUser+CoreDataClass.swift */,
-				7D6125032C93236D00CFC179 /* CDUser+CoreDataProperties.swift */,
-				7D6125042C93236D00CFC179 /* CDTodoItem+CoreDataClass.swift */,
-				7D6125052C93236D00CFC179 /* CDTodoItem+CoreDataProperties.swift */,
+				7D5BA8CF2C9447C500DE2A4A /* CDUser+CoreDataClass.swift */,
+				7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */,
+				7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */,
+				7D5BA8D22C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift */,
 			);
 			path = managedObjects;
 			sourceTree = "<group>";
@@ -178,10 +178,10 @@
 				7D9723092C93216300D9ACB1 /* Persistence.swift in Sources */,
 				7D922D402C931A1800A9E43F /* ContentView.swift in Sources */,
 				7D922D3E2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift in Sources */,
-				7D6125062C93236D00CFC179 /* CDUser+CoreDataClass.swift in Sources */,
-				7D6125072C93236D00CFC179 /* CDUser+CoreDataProperties.swift in Sources */,
-				7D6125082C93236D00CFC179 /* CDTodoItem+CoreDataClass.swift in Sources */,
-				7D6125092C93236D00CFC179 /* CDTodoItem+CoreDataProperties.swift in Sources */,
+				7D5BA8D32C9447C500DE2A4A /* CDUser+CoreDataClass.swift in Sources */,
+				7D5BA8D42C9447C500DE2A4A /* CDUser+CoreDataProperties.swift in Sources */,
+				7D5BA8D52C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift in Sources */,
+				7D5BA8D62C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift in Sources */,
 				7D97230C2C9322A400D9ACB1 /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

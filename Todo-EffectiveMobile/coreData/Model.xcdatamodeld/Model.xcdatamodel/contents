@@ -4,7 +4,7 @@
         <attribute name="content" attributeType="Binary"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="user" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDUser" inverseName="todoItems" inverseEntity="CDUser"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="todoItems" inverseEntity="CDUser"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -13,6 +13,6 @@
     </entity>
     <entity name="CDUser" representedClassName="CDUser" syncable="YES">
         <attribute name="isFirstLaunch" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <relationship name="todoItems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDTodoItem" inverseName="user" inverseEntity="CDTodoItem"/>
+        <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDTodoItem" inverseName="user" inverseEntity="CDTodoItem"/>
     </entity>
 </model>

@@ -2,7 +2,7 @@
 //  CDTodoItem+CoreDataProperties.swift
 //  Todo-EffectiveMobile
 //
-//  Created by Dmitrii Grigorev on 12.09.24.
+//  Created by Dmitrii Grigorev on 13.09.24.
 //
 //
 
@@ -23,19 +23,6 @@ extension CDTodoItem {
 
 }
 
-// MARK: Generated accessors for user
-extension CDTodoItem {
-
-    @objc(addUserObject:)
-    @NSManaged public func addToUser(_ value: CDUser)
-
-    @objc(removeUserObject:)
-    @NSManaged public func removeFromUser(_ value: CDUser)
-
-    @objc(addUser:)
-    @NSManaged public func addToUser(_ values: NSSet)
-
-    @objc(removeUser:)
-    @NSManaged public func removeFromUser(_ values: NSSet)
+extension CDTodoItem : Identifiable {
 
 }
