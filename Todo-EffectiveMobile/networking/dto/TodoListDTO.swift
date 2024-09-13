@@ -8,7 +8,7 @@
 import Foundation
 
 struct TodoListDTO : Codable {
-    var todos : TodoItemDTO
+    var todos : [TodoItemDTO]
 }
 
 struct TodoItemDTO : Codable {
