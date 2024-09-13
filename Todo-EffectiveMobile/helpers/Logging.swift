@@ -66,3 +66,35 @@ extension OSLogEntryLog {
         }
     }
 }
+
+
+
+extension Logger {
+    static func status(
+        _ viewModelName : String,
+        status : any TodoListStatus
+    ) {
+        Logger(category: .status).trace("\(viewModelName): \(status.description)")
+    }
+    static func warning(
+        _ viewModelName : String,
+        status : any TodoListStatus,
+        msg : String
+    ) {
+        Logger(category: .viewModel).warning("\(viewModelName): \(status.description): \(msg)")
+    }
+    static func event(
+        _ viewModelName : String,
+        event : any TodoListEvent,
+        status : any TodoListStatus
+    ) {
+        Logger(category: .event).trace("🔥\(viewModelName): \(event.description) (for state:\(status.description))")
+    }
+    static func reducer(
+        _ viewModelName : String,
+        event : any TodoListEvent,
+        status : any TodoListStatus
+    ) {
+        Logger(category: .reducer).warning("\(viewModelName): \(event.description) \(status.description)")
+    }
+}
