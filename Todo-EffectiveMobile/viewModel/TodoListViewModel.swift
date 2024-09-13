@@ -53,48 +53,63 @@ extension TodoListMainViewModel  {
         }
     }
     
-    enum Status : TodoListStatus {
-        case start
-        case idle
-        case loading
-        case loaded
-        case error
-        
-        var description : String {
+    enum Status : String,TodoListStatus {
+        var description: String {
             switch self {
-            case .start:
-                return "start"
-            case .idle:
-                return "idle"
-            case .loading:
-                return "loading"
-            case .loaded:
-                return "loaded"
-            case .error:
-                return "error"
+                case .start:
+                    "start"
+                case .idle:
+                    "idle"
+                case .loadingFromAPI:
+                    "loadingFromAPI"
+                case .loadingFromDB:
+                    "loadingFromDB"
+                case .editing:
+                    "editing"
+                case .error:
+                    "error"
             }
         }
+        
+        case start
+        case idle
+        case loadingFromAPI
+        case loadingFromDB
+        case editing
+        case error
     }
     
     enum Event : TodoListEvent {
+        case didStart
         case didLoadInitialData
-        case didTapLoading
-        case didCancelLoading
-        case didLoad
-        case didFailToLoad
+        case didFailToLoadInitialData
+        case didLoadFromAPI
+        case didFailToLoadFromAPI
+        case didRequestTodoListFromAPI
+        case didRequestEditTodoItem
+        case didEditTodoItem
+        case didFailToEditTodoItem
         
         var description : String {
             switch self {
-            case .didLoadInitialData:
-                return "didLoadInitialData"
-            case .didTapLoading:
-                return "didTapLoading"
-            case .didCancelLoading:
-                return "didCancelLoading"
-            case .didFailToLoad:
-                return "didFailToLoad"
-            case .didLoad:
-                return "didLoad"
+                case .didStart:
+                    "didStart"
+                case .didLoadInitialData:
+                    "didLoadInitialData"
+                case .didFailToLoadInitialData:
+                    "didFailToLoadInitialData"
+                case .didLoadFromAPI:
+                    "didLoadFromAPI"
+                case .didFailToLoadFromAPI:
+                    "didFailToLoadFromAPI"
+                case .didRequestTodoListFromAPI:
+                    "didRequestTodoListFromAPI"
+                case .didRequestEditTodoItem:
+                    "didRequestEditTodoItem"
+                case .didEditTodoItem:
+                    "didEditTodoItem"
+                case .didFailToEditTodoItem:
+                    "didFailToEditTodoItem"
             }
         }
     }
@@ -104,47 +119,51 @@ extension TodoListMainViewModel  {
 extension TodoListMainViewModel {
     static func reduce(_ state: State, _ event: Event) -> State {
         switch state.status {
-        case .start:
-            switch event {
-            case .didLoadInitialData:
-                return State(status: .idle)
-            default:
-                return state
-            }
-        case .idle:
-            switch event {
-            case .didTapLoading:
-                return State(status: .loading)
-            default:
-                return state
-            }
-        case .loading:
-            switch event {
-            case .didTapLoading:
-                return State(status: .loading)
-            case .didCancelLoading:
-                return State(status: .idle)
-            case .didLoad:
-                return State(status: .loaded)
-            case .didFailToLoad:
-                return State(status: .error)
-            default:
-                return state
-            }
-        case .loaded:
-            switch event {
-            case .didTapLoading:
-                return State(status: .loading)
-            default:
-                return state
-            }
-        case .error:
-            switch event {
-            case .didTapLoading:
-                return State(status: .loading)
-            default:
-                return state
-            }
+            case .start:
+                switch event {
+                    case .didStart:
+                        return .init(status: .loadingFromDB)
+                    default:
+                        return state
+                }
+            case .loadingFromDB:
+                switch event {
+                    case .didLoadInitialData:
+                        return .init(status: .idle)
+                    case .didFailToLoadInitialData:
+                        return .init(status: .error)
+                    default:
+                        return state
+                }
+            case .idle,.error:
+                switch event {
+                    case .didRequestEditTodoItem:
+                        return .init(status: .editing)
+                    case .didRequestTodoListFromAPI:
+                        return .init(status: .loadingFromAPI)
+                    default:
+                        return state
+                }
+            case .loadingFromAPI:
+                switch event {
+                    case .didRequestEditTodoItem:
+                        return .init(status: .editing)
+                    case .didFailToLoadFromAPI:
+                        return .init(status: .error)
+                    case .didLoadFromAPI:
+                        return .init(status: .idle)
+                    default:
+                        return state
+                }
+            case .editing:
+                switch event {
+                    case .didEditTodoItem:
+                        return .init(status: .idle)
+                    case .didFailToEditTodoItem:
+                        return .init(status: .error)
+                    default:
+                        return state
+                }
         }
     }
 }

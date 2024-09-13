@@ -17,7 +17,7 @@ extension CDTodoItem {
     }
 
     @NSManaged public var content: Data?
-    @NSManaged public var creationDate: Date?
+    @NSManaged public var creationDate: Date
     @NSManaged public var id: Int64
     @NSManaged public var user: CDUser?
     @NSManaged public var isCompleted: Bool

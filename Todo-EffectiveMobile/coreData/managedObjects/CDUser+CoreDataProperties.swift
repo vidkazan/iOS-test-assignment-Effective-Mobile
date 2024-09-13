@@ -31,7 +31,7 @@ extension CDUser {
         return NSFetchRequest<CDUser>(entityName: "CDUser")
     }
 
-    @NSManaged public var isFirstLaunch: Bool
+    @NSManaged public var didLoadTodoItemsFromAPI: Bool
     @NSManaged public var todoItems: Set<CDTodoItem>?
 }
 

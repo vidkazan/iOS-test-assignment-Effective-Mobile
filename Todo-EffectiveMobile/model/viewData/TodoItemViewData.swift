@@ -11,7 +11,7 @@ struct TodoItemViewData : Hashable {
     let id : Int
     let title : String
     let description : String
-    let creationDate : Date?
+    let creationDate : Date
     let todoDateStart : Date?
     let todoDateEnd : Date?
     let isCompleted : Bool
