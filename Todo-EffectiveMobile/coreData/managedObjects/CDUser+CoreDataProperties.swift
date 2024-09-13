@@ -8,17 +8,31 @@
 
 import Foundation
 import CoreData
-
+import OSLog
 
 extension CDUser {
+    static func createWith(using managedObjectContext: NSManagedObjectContext) -> CDUser? {
+        managedObjectContext.performAndWait {
+            let user = CDUser(entity: CDUser.entity(), insertInto: managedObjectContext)
+            do {
+                try managedObjectContext.save()
+                return user
+            } catch {
+                let nserror = error as NSError
+                Logger.coreData.error("cdUser: \(#function): \(nserror.description) \(nserror.userInfo)")
+                return nil
+            }
+        }
+    }
+}
 
+extension CDUser {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CDUser> {
         return NSFetchRequest<CDUser>(entityName: "CDUser")
     }
 
     @NSManaged public var isFirstLaunch: Bool
     @NSManaged public var todoItems: Set<CDTodoItem>?
-
 }
 
 // MARK: Generated accessors for todoItems

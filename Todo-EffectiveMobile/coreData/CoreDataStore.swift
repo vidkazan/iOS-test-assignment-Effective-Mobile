@@ -71,26 +71,46 @@ enum CoreDataError : Error {
 
 // MARK: Fetch
 extension CoreDataStore {
+    private func fetchOrCreateUser() -> [CDUser]? {
+        if let res = fetch(CDUser.self), !res.isEmpty {
+            return res
+        }
+         asyncContext.performAndWait {
+            self.user = CDUser.createWith(using: self.asyncContext)
+        }
+        return fetch(CDUser.self)
+    }
+    
     func fetchUser() -> CDUser? {
         let user = self.fetchOrCreateUser()?.first
         self.user = user
         return user
     }
     
-    
-    func fetchTodoItems() -> [Stop]? {
-        var todoItems = [Stop]()
-        if let fetchResult = fetch(CDTodoItem.self) {
+    func fetchTodoItems() -> [TodoItemViewData]? {
+        if let res = fetch(CDTodoItem.self)  {
+            var items = [TodoItemViewData]()
             asyncContext.performAndWait {
-                fetchResult.forEach {
-                    todoItems.append($0)
+                res.forEach {
+                    if
+                        let content = $0.content,
+                        let contentDecoded = try? JSONDecoder().decode(CDTodoItem.TodoItemContent.self, from: content) {
+                        items.append(TodoItemViewData(
+                            id: Int($0.id),
+                            title: contentDecoded.title,
+                            description: contentDecoded.description,
+                            creationDate: $0.creationDate,
+                            todoDateStart: contentDecoded.todoDateStart,
+                            todoDateEnd: contentDecoded.todoDateEnd,
+                            isCompleted: $0.isCompleted
+                        ))
+                    }
                 }
             }
-            return stops
+            return items
         }
         return nil
     }
-    
     
     func fetch<T : NSManagedObject>(_ t : T.Type) -> [T]? {
         var object : [T]? = nil
@@ -118,3 +138,58 @@ extension CoreDataStore {
     }
 }
 
+// MARK: remove
+extension CoreDataStore {
+    func deleteTodoItemIfFound(id : Int) -> Bool {
+        var result = false
+        if let objects = self.fetch(CDTodoItem.self) {
+             asyncContext.performAndWait {
+                if let res = objects.first(where: { obj in
+                    return obj.id == id
+                }) {
+                    self.asyncContext.delete(res)
+                    self.saveAsyncContext()
+                    result = true
+                } else {
+                    Logger.coreData.error("\(#function): not found")
+                }
+            }
+        } else {
+            Logger.coreData.error("\(#function): fetch failed")
+        }
+        return result
+    }
+}
+
+
+// MARK: add
+extension CoreDataStore {
+    func addTodoItem(todoItem : TodoItemViewData) -> Bool {
+        var res = false
+        guard let user = self.user else {
+            Logger.coreData.error("\(#function): user is nil")
+            return false
+        }
+         asyncContext.performAndWait {
+            let _ = CDTodoItem(
+                viewData: todoItem,
+                user: user,
+                using: self.asyncContext
+            )
+            self.saveAsyncContext()
+            res = true
+        }
+        return res
+    }
+}
+
+// MARK: update
+extension CoreDataStore {
+    func updateTodoItem(id: Int,viewData : TodoItemViewData) -> Bool {
+        if deleteTodoItemIfFound(id: id) {
+            return addTodoItem(todoItem: viewData)
+        }
+        Logger.coreData.error("\(#function): update failed")
+        return false
+    }
+}
