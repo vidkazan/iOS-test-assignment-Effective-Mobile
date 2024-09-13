@@ -11,6 +11,8 @@
 		7D5BA8D42C9447C500DE2A4A /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */; };
 		7D5BA8D52C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */; };
 		7D5BA8D62C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D22C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift */; };
+		7D5BA8D82C94485000DE2A4A /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D72C94485000DE2A4A /* CoreDataStore.swift */; };
+		7D5BA8DB2C94496D00DE2A4A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8DA2C94496D00DE2A4A /* Logging.swift */; };
 		7D922D3E2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D922D3D2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift */; };
 		7D922D402C931A1800A9E43F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D922D3F2C931A1800A9E43F /* ContentView.swift */; };
 		7D922D422C931A1900A9E43F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D922D412C931A1900A9E43F /* Assets.xcassets */; };
@@ -24,6 +26,8 @@
 		7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7D5BA8D22C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7D5BA8D72C94485000DE2A4A /* CoreDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
+		7D5BA8DA2C94496D00DE2A4A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		7D922D3A2C931A1800A9E43F /* Todo-EffectiveMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Todo-EffectiveMobile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D922D3D2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo_EffectiveMobileApp.swift; sourceTree = "<group>"; };
 		7D922D3F2C931A1800A9E43F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -46,6 +50,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7D5BA8D92C94496400DE2A4A /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				7D5BA8DA2C94496D00DE2A4A /* Logging.swift */,
+			);
+			path = helpers;
+			sourceTree = "<group>";
+		};
 		7D61250A2C93237200CFC179 /* managedObjects */ = {
 			isa = PBXGroup;
 			children = (
@@ -76,6 +88,7 @@
 		7D922D3C2C931A1800A9E43F /* Todo-EffectiveMobile */ = {
 			isa = PBXGroup;
 			children = (
+				7D5BA8D92C94496400DE2A4A /* helpers */,
 				7DB5D92B2C931BDB00A51CA6 /* coreData */,
 				7D922D3D2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift */,
 				7D922D3F2C931A1800A9E43F /* ContentView.swift */,
@@ -101,6 +114,7 @@
 				7D61250A2C93237200CFC179 /* managedObjects */,
 				7DB5D92C2C931CBB00A51CA6 /* Persistence.swift */,
 				7D97230A2C9322A400D9ACB1 /* Model.xcdatamodeld */,
+				7D5BA8D72C94485000DE2A4A /* CoreDataStore.swift */,
 			);
 			path = coreData;
 			sourceTree = "<group>";
@@ -176,10 +190,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D9723092C93216300D9ACB1 /* Persistence.swift in Sources */,
+				7D5BA8DB2C94496D00DE2A4A /* Logging.swift in Sources */,
 				7D922D402C931A1800A9E43F /* ContentView.swift in Sources */,
 				7D922D3E2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift in Sources */,
 				7D5BA8D32C9447C500DE2A4A /* CDUser+CoreDataClass.swift in Sources */,
 				7D5BA8D42C9447C500DE2A4A /* CDUser+CoreDataProperties.swift in Sources */,
+				7D5BA8D82C94485000DE2A4A /* CoreDataStore.swift in Sources */,
 				7D5BA8D52C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift in Sources */,
 				7D5BA8D62C9447C500DE2A4A /* CDTodoItem+CoreDataProperties.swift in Sources */,
 				7D97230C2C9322A400D9ACB1 /* Model.xcdatamodeld in Sources */,
