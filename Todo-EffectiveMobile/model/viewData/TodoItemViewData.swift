@@ -8,6 +8,7 @@
 import Foundation
 
 struct TodoItemViewData : Hashable {
+    let id : Int
     let title : String
     let description : String
     let creationDate : Date?
