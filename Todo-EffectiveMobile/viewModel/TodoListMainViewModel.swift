@@ -89,8 +89,8 @@ extension TodoListMainViewModel  {
     
     enum Action {
         case adding(data : TodoItemViewData)
-        case deleting(id : Int)
-        case updating(id : Int, data : TodoItemViewData)
+        case deleting(id : UUID)
+        case updating(id : UUID, data : TodoItemViewData)
     }
 
     enum Event : TodoListEvent {

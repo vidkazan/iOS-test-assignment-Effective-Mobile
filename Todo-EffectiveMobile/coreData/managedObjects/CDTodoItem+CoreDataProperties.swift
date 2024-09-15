@@ -18,7 +18,7 @@ extension CDTodoItem {
 
     @NSManaged public var content: Data?
     @NSManaged public var creationDate: Date
-    @NSManaged public var id: Int64
+    @NSManaged public var id: UUID
     @NSManaged public var user: CDUser?
     @NSManaged public var isCompleted: Bool
 
@@ -46,7 +46,7 @@ extension CDTodoItem {
                 entity: CDTodoItem.entity(),
                 insertInto: managedObjectContext
             )
-            self.id = id
+            self.id = viewData.id
             self.creationDate = viewData.creationDate
             self.isCompleted = viewData.isCompleted
             

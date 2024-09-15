@@ -96,7 +96,7 @@ extension CoreDataStore {
                         let content = $0.content,
                         let contentDecoded = try? JSONDecoder().decode(CDTodoItem.TodoItemContent.self, from: content) {
                         items.append(TodoItemViewData(
-                            id: Int($0.id),
+                            id: $0.id,
                             title: contentDecoded.title,
                             description: contentDecoded.description,
                             creationDate: $0.creationDate,
@@ -140,7 +140,7 @@ extension CoreDataStore {
 
 // MARK: remove
 extension CoreDataStore {
-    func deleteTodoItemIfFound(id : Int) -> Bool {
+    func deleteTodoItemIfFound(id : UUID) -> Bool {
         var result = false
         if let objects = self.fetch(CDTodoItem.self) {
              asyncContext.performAndWait {
@@ -185,7 +185,7 @@ extension CoreDataStore {
 
 // MARK: update
 extension CoreDataStore {
-    func updateTodoItem(id: Int,viewData : TodoItemViewData) -> Bool {
+    func updateTodoItem(id: UUID,viewData : TodoItemViewData) -> Bool {
         if deleteTodoItemIfFound(id: id) {
             return addTodoItem(todoItem: viewData)
         }
