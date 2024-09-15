@@ -24,9 +24,7 @@ struct TodoItemCellView : TodoListView {
                         .foregroundStyle(.secondary)
                     Divider()
                 }
-                Toggle(isOn: .init(get: {
-                    item.isCompleted
-                }, set: { _ in
+                Button(action: {
                     vm.send(
                         event: .didRequestEditTodoItem(
                             action: .updating(
@@ -35,9 +33,10 @@ struct TodoItemCellView : TodoListView {
                             )
                         )
                     )
-                })) {
-                    
-                }
+                }, label: {
+                    Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 22,weight: .medium))
+                })
             }
         }
     }
