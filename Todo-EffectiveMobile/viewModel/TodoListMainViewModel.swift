@@ -11,22 +11,29 @@ import OSLog
 
 class TodoListMainViewModel : TodoListViewModel {
     @Published private(set) var state : State {
-        didSet { Self.log(state.status) }
+        didSet {
+            Self.log(state.status)
+            Self.warning(state.status, ">>> \(state.todoItems.count)")
+        }
     }
 
     private var bag = Set<AnyCancellable>()
     private let input = PassthroughSubject<Event,Never>()
     
-    init(_ initaialStatus : Status = .idle) {
+    init(_ initaialStatus : Status = .start,coreDataStore : CoreDataStore) {
         self.state = State(
-            status: initaialStatus
+            status: initaialStatus,
+            todoItems: []
         )
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.userInput(input: input.eraseToAnyPublisher())
+                Self.userInput(input: input.eraseToAnyPublisher()),
+                Self.whenEditing(coreDataStore: coreDataStore),
+                Self.whenStart(coreDataStore: coreDataStore),
+                Self.whenLoadingFromDB(coreDataStore: coreDataStore)
             ]
         )
         .assign(to: \.state, on: self)
@@ -43,17 +50,17 @@ class TodoListMainViewModel : TodoListViewModel {
 }
 
 extension TodoListMainViewModel  {
-    struct State {
+    struct State : Equatable {
         let status : Status
         let todoItems : [TodoItemViewData]
 
-        init(status: Status) {
+        init(status: Status, todoItems : [TodoItemViewData]) {
             self.status = status
-            self.todoItems = []
+            self.todoItems = todoItems
         }
     }
     
-    enum Status : String,TodoListStatus {
+    enum Status : TodoListStatus {
         var description: String {
             switch self {
                 case .start:
@@ -75,20 +82,27 @@ extension TodoListMainViewModel  {
         case idle
         case loadingFromAPI
         case loadingFromDB
-        case editing
+        case editing(action : Action)
         case error
     }
     
+    
+    enum Action {
+        case adding(data : TodoItemViewData)
+        case deleting(id : Int)
+        case updating(id : Int, data : TodoItemViewData)
+    }
+
     enum Event : TodoListEvent {
         case didStart
-        case didLoadInitialData
+        case didLoadInitialData(items : [TodoItemViewData])
         case didFailToLoadInitialData
-        case didLoadFromAPI
+        case didLoadFromAPI(items : [TodoItemViewData])
         case didFailToLoadFromAPI
         case didRequestTodoListFromAPI
-        case didRequestEditTodoItem
-        case didEditTodoItem
-        case didFailToEditTodoItem
+        case didRequestEditTodoItem(action : Action)
+        case didEditTodoItem(action : Action, items : [TodoItemViewData])
+        case didFailToEditTodoItem(action : Action)
         
         var description : String {
             switch self {
@@ -118,49 +132,50 @@ extension TodoListMainViewModel  {
 
 extension TodoListMainViewModel {
     static func reduce(_ state: State, _ event: Event) -> State {
+        Self.log(event, state.status)
         switch state.status {
             case .start:
                 switch event {
-                    case .didStart:
-                        return .init(status: .loadingFromDB)
-                    default:
-                        return state
+                case .didStart:
+                        return .init(status: .loadingFromDB,todoItems: state.todoItems)
+                default:
+                    return state
                 }
             case .loadingFromDB:
                 switch event {
-                    case .didLoadInitialData:
-                        return .init(status: .idle)
+                    case .didLoadInitialData(let items):
+                        return .init(status: .idle,todoItems: items)
                     case .didFailToLoadInitialData:
-                        return .init(status: .error)
+                        return .init(status: .error,todoItems: state.todoItems)
                     default:
                         return state
                 }
             case .idle,.error:
                 switch event {
-                    case .didRequestEditTodoItem:
-                        return .init(status: .editing)
+                    case .didRequestEditTodoItem(let action):
+                        return .init(status: .editing(action: action), todoItems: state.todoItems)
                     case .didRequestTodoListFromAPI:
-                        return .init(status: .loadingFromAPI)
+                        return .init(status: .loadingFromAPI, todoItems: state.todoItems)
                     default:
                         return state
                 }
             case .loadingFromAPI:
                 switch event {
-                    case .didRequestEditTodoItem:
-                        return .init(status: .editing)
+                    case .didRequestEditTodoItem(let action):
+                        return .init(status: .editing(action: action), todoItems: state.todoItems)
                     case .didFailToLoadFromAPI:
-                        return .init(status: .error)
-                    case .didLoadFromAPI:
-                        return .init(status: .idle)
+                        return .init(status: .error, todoItems: state.todoItems)
+                    case .didLoadFromAPI(let items):
+                        return .init(status: .idle, todoItems: items)
                     default:
                         return state
                 }
             case .editing:
                 switch event {
-                    case .didEditTodoItem:
-                        return .init(status: .idle)
+                    case let .didEditTodoItem(action, items):
+                        return .init(status: .idle, todoItems: items)
                     case .didFailToEditTodoItem:
-                        return .init(status: .error)
+                        return .init(status: .error, todoItems: state.todoItems)
                     default:
                         return state
                 }
