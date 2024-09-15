@@ -11,6 +11,7 @@ import SwiftUI
 struct TodoListMainView : TodoListView {
     @ObservedObject var vm : TodoListMainViewModel = .init(coreDataStore: .init())
     @State var filterState : FilterState = .All
+    @State var items : [TodoItemViewData] = []
     var body: some View {
         VStack {
             header()
@@ -18,6 +19,12 @@ struct TodoListMainView : TodoListView {
             list()
         }
         .padding()
+        .onChange(of:filterState, perform: {
+            items = $0.todoItems(items: vm.state.todoItems)
+        })
+        .onReceive(vm.$state, perform: {
+            items = filterState.todoItems(items: $0.todoItems)
+        })
     }
 }
 
@@ -38,6 +45,16 @@ extension TodoListMainView {
                     items.filter({$0.isCompleted == true}).count
             }
         }
+        func todoItems(items : [TodoItemViewData]) -> [TodoItemViewData] {
+            switch self {
+                case .All:
+                    items
+                case .Open:
+                    items.filter({$0.isCompleted == false})
+                case .Closed:
+                    items.filter({$0.isCompleted == true})
+            }
+        }
     }
 }
 
@@ -45,7 +62,7 @@ private extension TodoListMainView {
     func list() -> some View {
         ScrollView {
             LazyVStack {
-                ForEach(vm.state.todoItems.sorted(by: {
+                ForEach(items.sorted(by: {
                     $0.creationDate > $1.creationDate
                 }),id:\.creationDate) {
                     TodoItemCellView(vm: vm, item: $0)
@@ -119,6 +136,16 @@ private extension TodoListMainView {
                 .frame(minHeight: 43)
             }
             Spacer()
+            switch vm.state.status {
+                case .loadingFromAPI:
+                    ProgressView()
+                case .loadingFromDB:
+                    ProgressView()
+                case .editing:
+                    ProgressView()
+                default:
+                    EmptyView()
+            }
         }
     }
 }
