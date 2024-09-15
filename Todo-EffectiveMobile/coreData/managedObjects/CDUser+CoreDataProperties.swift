@@ -32,7 +32,7 @@ extension CDUser {
     }
 
     @NSManaged public var didLoadTodoItemsFromAPI: Bool
-    @NSManaged public var todoItems: Set<CDTodoItem>?
+    @NSManaged public var todoItems: Set<CDTodoItem>
 }
 
 // MARK: Generated accessors for todoItems

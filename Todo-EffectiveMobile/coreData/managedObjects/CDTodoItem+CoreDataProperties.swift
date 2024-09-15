@@ -42,14 +42,17 @@ extension CDTodoItem {
         viewData : TodoItemViewData,
         user : CDUser,
         using managedObjectContext: NSManagedObjectContext) {
-            self.init(entity: CDTodoItem.entity(), insertInto: managedObjectContext)
+            self.init(
+                entity: CDTodoItem.entity(),
+                insertInto: managedObjectContext
+            )
             self.id = id
             self.creationDate = viewData.creationDate
             self.isCompleted = viewData.isCompleted
             
             let content = Self.TodoItemContent(
                 title: viewData.title,
-                description: viewData.title,
+                description: viewData.description,
                 todoDateStart: viewData.todoDateStart,
                 todoDateEnd: viewData.todoDateEnd
             )
