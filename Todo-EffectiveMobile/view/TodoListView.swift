@@ -21,6 +21,29 @@ struct TodoListMainView : TodoListView {
             list()
                 .disabled(vm.state.status.listIsDisabled)
         }
+        .alert("Error", isPresented: .init(get: {
+            if case .error = vm.state.status {
+                return true
+            }
+            return false
+        }, set: { _ in
+        }), actions: {
+            Button(action: {
+                vm.send(event: .didRequestTodoListFromAPI)
+            }, label: {
+                Label("Try to repeat", systemImage: "xmark.icloud.fill")
+            })
+            Button(action: {
+                vm.send(event: .didrequestStopLoading)
+            }, label: {
+                Label("Close", systemImage: "xmark.icloud.fill")
+            })
+        }, message: {
+            if case .error(let error) = vm.state.status {
+                Text(verbatim: error.localizedDescription)
+            }
+            Text("Unknown error", comment: "TodoListMainView: error alert")
+        })
         .sheet(
             item: $itemForDetails,
             onDismiss: {
@@ -124,6 +147,9 @@ private extension TodoListMainView {
                         .foregroundStyle(.blue)
                         .background(.blue.opacity(0.15),
                            in: RoundedRectangle(cornerRadius: 10))
+                        .onTapGesture {
+                            vm.send(event: .didCancelledLoadingFromAPI)
+                        }
                 default:
                     Button(action: {
                         itemForDetails = .create
@@ -169,16 +195,6 @@ private extension TodoListMainView {
                 .frame(minWidth: 70,minHeight: 43)
             }
             Spacer()
-            switch vm.state.status {
-                case .loadingFromAPI:
-                    ProgressView()
-                case .loadingFromDB:
-                    ProgressView()
-                case .editing:
-                    ProgressView()
-                default:
-                    EmptyView()
-            }
         }
     }
 }

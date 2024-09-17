@@ -204,17 +204,15 @@ extension CoreDataStore {
         return false
     }
     
-    func updateUser(didLoadFromAPI : Bool) -> Bool {
-        let res = false
+    func updateUser(didLoadFromAPI : Bool) {
         guard let user = self.user else {
             Logger.coreData.error("\(#function): user is nil")
-            return false
+            return
         }
         
         asyncContext.performAndWait {
             user.didLoadTodoItemsFromAPI = didLoadFromAPI
             self.saveAsyncContext()
         }
-        return true
     }
 }
