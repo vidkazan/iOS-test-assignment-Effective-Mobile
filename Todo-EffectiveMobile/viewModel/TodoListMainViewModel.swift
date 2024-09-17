@@ -13,7 +13,6 @@ class TodoListMainViewModel : TodoListViewModel {
     @Published private(set) var state : State {
         didSet {
             Self.log(state.status)
-            Self.warning(state.status, ">>> \(state.todoItems.count)")
         }
     }
 

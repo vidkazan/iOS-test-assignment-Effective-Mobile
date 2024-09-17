@@ -19,11 +19,36 @@ struct TodoItemCellView : TodoListView {
                     Text(verbatim: item.title)
                         .font(.system(size: 17,weight: .medium))
                         .strikethrough(item.isCompleted)
-                    Text(verbatim: item.description)
-                        .font(.system(size: 12,weight: .medium))
-                        .foregroundStyle(.secondary)
-                    Divider()
+                    if !item.description.isEmpty {
+                        Text(verbatim: item.description)
+                            .font(.system(size: 12,weight: .medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    if item.todoDateStart != nil {
+                        Divider()
+                        HStack {
+                            if let startDate = item.todoDateStart {
+                                Text(startDate, style: .date)
+                                    .font(.system(size: 12,weight: .medium))
+                                    .foregroundStyle(.secondary)
+                                Text(startDate, style: .time)
+                                    .font(.system(size: 12,weight: .medium))
+                                    .foregroundStyle(.secondary)
+                            }
+                            if let endDate = item.todoDateEnd {
+                                Text(verbatim: " - ")
+                                Text(endDate, style: .date)
+                                    .font(.system(size: 12,weight: .medium))
+                                    .foregroundStyle(.secondary)
+                                Text(endDate, style: .time)
+                                    .font(.system(size: 12,weight: .medium))
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+                    }
                 }
+                Spacer()
                 Button(action: {
                     vm.send(
                         event: .didRequestEditTodoItem(
