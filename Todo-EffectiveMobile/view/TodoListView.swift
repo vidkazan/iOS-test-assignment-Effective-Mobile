@@ -7,17 +7,33 @@
 
 import Foundation
 import SwiftUI
+import OSLog
 
 struct TodoListMainView : TodoListView {
     @ObservedObject var vm : TodoListMainViewModel = .init(coreDataStore: .init())
     @State var filterState : FilterState = .All
     @State var items : [TodoItemViewData] = []
+    @State var itemForDetails : TodoItemDetailView.Mode?
     var body: some View {
         VStack {
             header()
             filter()
             list()
         }
+        .sheet(
+            item: $itemForDetails,
+            onDismiss: {
+                #warning("SUI bug for < 17.2.1: 1 second delay after closing Sheet and calling this function ")
+                self.log.debug("sheet dismiss with 'onDismiss'")
+                itemForDetails = nil
+            },
+            content: { mode in
+                TodoItemDetailView(vm: vm, mode: mode, closeAction: {
+                    self.log.debug("sheet dismiss with 'Close'")
+                    itemForDetails = nil
+                })
+            }
+        )
         .padding()
         .onChange(of:filterState, perform: {
             items = $0.todoItems(items: vm.state.todoItems)
@@ -63,12 +79,24 @@ private extension TodoListMainView {
         ScrollView {
             LazyVStack {
                 ForEach(items.sorted(by: {
-                    $0.creationDate > $1.creationDate
-                }),id:\.creationDate) {
-                    TodoItemCellView(vm: vm, item: $0)
-                        .padding()
-                        .background(.secondary.opacity(0.1))
-                        .cornerRadius(10)
+                    $0.creationDate < $1.creationDate
+                }),id:\.creationDate) { item in
+                    Button(action: {
+                        itemForDetails = .edit(item: item)
+                    }, label: {
+                        TodoItemCellView(vm: vm, item: item)
+                            .padding()
+                            .background(.gray.opacity(0.1))
+                            .cornerRadius(10)
+                            .contextMenu(menuItems: {
+                                Button(action: {
+                                    vm.send(event: .didRequestEditTodoItem(action: .deleting(id: item.id)))
+                                }, label: {
+                                    Label("Delete", systemImage: "xmark.bin.circle.fill")
+                                })
+                            })
+                    })
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
@@ -87,15 +115,7 @@ private extension TodoListMainView {
             }
             Spacer()
             Button(action: {
-                vm.send(event: .didRequestEditTodoItem(action: .adding(data: .init(
-                    id: .init(),
-                    title: "Title",
-                    description: "Description",
-                    creationDate: .now,
-                    todoDateStart: .now + 3000,
-                    todoDateEnd: .now + 6000,
-                    isCompleted: false
-                ))))
+                itemForDetails = .create
             }, label: {
                 Label("New Task", systemImage: "plus")
                     .font(.system(size: 15,weight: .medium))
@@ -133,7 +153,7 @@ private extension TodoListMainView {
                             .frame(height: 30)
                     }
                 })
-                .frame(minHeight: 43)
+                .frame(minWidth: 70,minHeight: 43)
             }
             Spacer()
             switch vm.state.status {
