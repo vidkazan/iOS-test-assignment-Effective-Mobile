@@ -8,6 +8,16 @@
 import Foundation
 
 struct TodoItemViewData : Hashable {
+    static let defaultItem = Self.init(
+        id: .init(),
+        title: "New Todo",
+        description: "",
+        creationDate: .now,
+        todoDateStart: nil,
+        todoDateEnd: nil,
+        isCompleted: false
+    )
+    
     let id : UUID
     let title : String
     let description : String
