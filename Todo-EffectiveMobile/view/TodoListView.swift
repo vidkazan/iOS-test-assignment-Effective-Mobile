@@ -19,6 +19,7 @@ struct TodoListMainView : TodoListView {
             header()
             filter()
             list()
+                .disabled(vm.state.status.listIsDisabled)
         }
         .sheet(
             item: $itemForDetails,
@@ -114,17 +115,29 @@ private extension TodoListMainView {
                     .font(.subheadline)
             }
             Spacer()
-            Button(action: {
-                itemForDetails = .create
-            }, label: {
-                Label("New Task", systemImage: "plus")
-                    .font(.system(size: 15,weight: .medium))
-                    .padding(.horizontal,10)
-                    .padding(10)
-                    .foregroundStyle(.blue)
-                    .background(.blue.opacity(0.15),
-                       in: RoundedRectangle(cornerRadius: 10))
-            })
+            switch vm.state.status {
+                case .loadingFromAPI,.loadingFromDB,.editing,.validatingIfLoadedFromAPI:
+                    ProgressView()
+                        .font(.system(size: 15,weight: .medium))
+                        .padding(.horizontal,10)
+                        .padding(10)
+                        .foregroundStyle(.blue)
+                        .background(.blue.opacity(0.15),
+                           in: RoundedRectangle(cornerRadius: 10))
+                default:
+                    Button(action: {
+                        itemForDetails = .create
+                    }, label: {
+                        Label("New Task", systemImage: "plus")
+                            .font(.system(size: 15,weight: .medium))
+                            .padding(.horizontal,10)
+                            .padding(10)
+                            .foregroundStyle(.blue)
+                            .background(.blue.opacity(0.15),
+                               in: RoundedRectangle(cornerRadius: 10))
+                    })
+                    
+            }
         }
     }
 }
@@ -166,6 +179,17 @@ private extension TodoListMainView {
                 default:
                     EmptyView()
             }
+        }
+    }
+}
+
+private extension TodoListMainViewModel.Status {
+    var listIsDisabled : Bool {
+        switch self {
+            case .start,.loadingFromAPI,.loadingFromDB,.error,.validatingIfLoadedFromAPI:
+                true
+            default:
+                false
         }
     }
 }
