@@ -19,22 +19,38 @@ extension TodoListMainViewModel {
         }
     }
     
+    static func whenValidatingAPICallIfNeeded() -> Feedback<State, Event> {
+        Feedback {  (state: State) -> AnyPublisher<Event, Never> in
+            guard case .validatingIfLoadedFromAPI = state.status else {
+                return Empty().eraseToAnyPublisher()
+            }
+            return ApiService(client: ApiClient()).fetch(TodoListDTO.self, type: .todoList)
+            .map {
+                Event.didLoadFromAPI(items: $0.viewData())
+            }
+            .catch {
+               return Just(Event.didFailToLoadFromAPI(error: $0))
+            }
+            .eraseToAnyPublisher()
+        }
+    }
+    
     static func whenLoadingFromDB(coreDataStore : CoreDataStore) -> Feedback<State, Event> {
         Feedback {  (state: State) -> AnyPublisher<Event, Never> in
             guard case .loadingFromDB = state.status else {
                 return Empty().eraseToAnyPublisher()
             }
-            guard coreDataStore.fetchUser() != nil else {
+            guard let didLoadFromAPI = coreDataStore.didLoadFromAPI() else {
                 Logger.loadingsInitialData.info("\(#function): user is nil: loading default data")
-                return Just(Event.didLoadInitialData(items: []))
+                return Just(Event.didLoadInitialData(items: [], didLoadFromAPI: false))
                     .eraseToAnyPublisher()
             }
             guard let items = coreDataStore.fetchTodoItems() else {
-                Logger.loadingsInitialData.info("\(#function): user is nil: loading default data")
-                return Just(Event.didLoadInitialData(items: []))
+                Logger.loadingsInitialData.info("\(#function): failed to fetch todoItems")
+                return Just(Event.didLoadInitialData(items: [], didLoadFromAPI: didLoadFromAPI))
                     .eraseToAnyPublisher()
             }
-            return Just(Event.didLoadInitialData(items: items)).eraseToAnyPublisher()
+            return Just(Event.didLoadInitialData(items: items, didLoadFromAPI: didLoadFromAPI)).eraseToAnyPublisher()
         }
     }
     

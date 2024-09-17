@@ -22,7 +22,8 @@ class TodoListMainViewModel : TodoListViewModel {
     init(_ initaialStatus : Status = .start,coreDataStore : CoreDataStore) {
         self.state = State(
             status: initaialStatus,
-            todoItems: []
+            todoItems: [],
+            didLoadFromAPI: false
         )
         Publishers.system(
             initial: state,
@@ -32,7 +33,8 @@ class TodoListMainViewModel : TodoListViewModel {
                 Self.userInput(input: input.eraseToAnyPublisher()),
                 Self.whenEditing(coreDataStore: coreDataStore),
                 Self.whenStart(coreDataStore: coreDataStore),
-                Self.whenLoadingFromDB(coreDataStore: coreDataStore)
+                Self.whenLoadingFromDB(coreDataStore: coreDataStore),
+                Self.whenValidatingAPICallIfNeeded()
             ]
         )
         .assign(to: \.state, on: self)
@@ -50,12 +52,20 @@ class TodoListMainViewModel : TodoListViewModel {
 
 extension TodoListMainViewModel  {
     struct State : Equatable {
+        let didLoadFromAPI : Bool
         let status : Status
         let todoItems : [TodoItemViewData]
 
-        init(status: Status, todoItems : [TodoItemViewData]) {
+        init(status: Status, todoItems : [TodoItemViewData], didLoadFromAPI : Bool) {
             self.status = status
             self.todoItems = todoItems
+            self.didLoadFromAPI = false
+        }
+        
+        init(state : Self,status: Status? = nil, todoItems : [TodoItemViewData]? = nil, didLoadFromAPI : Bool? = nil) {
+            self.status = status ?? state.status
+            self.todoItems = todoItems ?? state.todoItems
+            self.didLoadFromAPI = didLoadFromAPI ?? state.didLoadFromAPI
         }
     }
     
@@ -74,6 +84,8 @@ extension TodoListMainViewModel  {
                     "editing"
                 case .error:
                     "error"
+                case .validatingIfLoadedFromAPI:
+                    "validatingIfLoadedFromAPI"
             }
         }
         
@@ -83,6 +95,7 @@ extension TodoListMainViewModel  {
         case loadingFromDB
         case editing(action : Action)
         case error
+        case validatingIfLoadedFromAPI
     }
     
     
@@ -94,14 +107,15 @@ extension TodoListMainViewModel  {
 
     enum Event : TodoListEvent {
         case didStart
-        case didLoadInitialData(items : [TodoItemViewData])
+        case didLoadInitialData(items : [TodoItemViewData], didLoadFromAPI : Bool)
         case didFailToLoadInitialData
         case didLoadFromAPI(items : [TodoItemViewData])
-        case didFailToLoadFromAPI
+        case didFailToLoadFromAPI(error : ApiError)
         case didRequestTodoListFromAPI
         case didRequestEditTodoItem(action : Action)
         case didEditTodoItem(action : Action, items : [TodoItemViewData])
         case didFailToEditTodoItem(action : Action)
+        case didCancelledLoadingFromAPI
         
         var description : String {
             switch self {
@@ -123,6 +137,8 @@ extension TodoListMainViewModel  {
                     "didEditTodoItem"
                 case .didFailToEditTodoItem:
                     "didFailToEditTodoItem"
+                case .didCancelledLoadingFromAPI:
+                    "didCancelledLoadingFromAPI"
             }
         }
     }
@@ -136,45 +152,52 @@ extension TodoListMainViewModel {
             case .start:
                 switch event {
                 case .didStart:
-                        return .init(status: .loadingFromDB,todoItems: state.todoItems)
+                        return .init(state: state, status: .loadingFromDB)
                 default:
                     return state
                 }
             case .loadingFromDB:
                 switch event {
-                    case .didLoadInitialData(let items):
-                        return .init(status: .idle,todoItems: items)
+                    case let .didLoadInitialData(items, didLoadFromAPI):
+                        return .init(state: state, status: .validatingIfLoadedFromAPI,todoItems: items)
                     case .didFailToLoadInitialData:
-                        return .init(status: .error,todoItems: state.todoItems)
+                        return .init(state: state, status: .error)
+                    default:
+                        return state
+                }
+            case .validatingIfLoadedFromAPI:
+                switch event {
+                    case .didCancelledLoadingFromAPI:
+                        return .init(state: state, status: .idle)
+                    case .didRequestTodoListFromAPI:
+                        return .init(state: state, status: .loadingFromAPI)
+                    case .didFailToLoadFromAPI(let error):
+                        return .init(state: state, status: .error)
                     default:
                         return state
                 }
             case .idle,.error:
                 switch event {
                     case .didRequestEditTodoItem(let action):
-                        return .init(status: .editing(action: action), todoItems: state.todoItems)
-                    case .didRequestTodoListFromAPI:
-                        return .init(status: .loadingFromAPI, todoItems: state.todoItems)
+                        return .init(state: state, status: .editing(action: action))
                     default:
                         return state
                 }
             case .loadingFromAPI:
                 switch event {
-                    case .didRequestEditTodoItem(let action):
-                        return .init(status: .editing(action: action), todoItems: state.todoItems)
                     case .didFailToLoadFromAPI:
-                        return .init(status: .error, todoItems: state.todoItems)
+                        return .init(state: state, status: .error)
                     case .didLoadFromAPI(let items):
-                        return .init(status: .idle, todoItems: items)
+                        return .init(state: state, status: .idle,todoItems: items)
                     default:
                         return state
                 }
             case .editing:
                 switch event {
                     case let .didEditTodoItem(action, items):
-                        return .init(status: .idle, todoItems: items)
+                        return .init(state: state, status: .idle,todoItems: items)
                     case .didFailToEditTodoItem:
-                        return .init(status: .error, todoItems: state.todoItems)
+                        return .init(state: state, status: .error)
                     default:
                         return state
                 }
