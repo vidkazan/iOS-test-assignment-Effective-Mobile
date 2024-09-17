@@ -19,14 +19,28 @@ extension TodoListMainViewModel {
         }
     }
     
-    static func whenValidatingAPICallIfNeeded() -> Feedback<State, Event> {
+    static func whenValidatingAPICallIfNeeded(coreDataStore : CoreDataStore) -> Feedback<State, Event> {
         Feedback {  (state: State) -> AnyPublisher<Event, Never> in
             guard case .validatingIfLoadedFromAPI = state.status else {
                 return Empty().eraseToAnyPublisher()
             }
+            if state.didLoadFromAPI {
+                return Just(Event.didCancelledLoadingFromAPI).eraseToAnyPublisher()
+            } else {
+                return Just(Event.didRequestTodoListFromAPI).eraseToAnyPublisher()
+            }
+        }
+    }
+    
+    static func whenLoadingFromAPI(coreDataStore : CoreDataStore) -> Feedback<State, Event> {
+        Feedback {  (state: State) -> AnyPublisher<Event, Never> in
+            guard case .loadingFromAPI = state.status else {
+                return Empty().eraseToAnyPublisher()
+            }
             return ApiService(client: ApiClient()).fetch(TodoListDTO.self, type: .todoList)
             .map {
-                Event.didLoadFromAPI(items: $0.viewData())
+                coreDataStore.updateUser(didLoadFromAPI: true)
+                return Event.didLoadFromAPI(items: $0.viewData())
             }
             .catch {
                return Just(Event.didFailToLoadFromAPI(error: $0))
@@ -64,11 +78,11 @@ extension TodoListMainViewModel {
             switch action {
             case let .updating(id, data):
                 guard let index = items.firstIndex(where: { $0.id == id} ) else {
-                    return Just(Event.didFailToEditTodoItem(action: action))
+                    return Just(Event.didFailToEditTodoItem(action: action, error: .generic(description: "failed to update todo: todo not found")))
                         .eraseToAnyPublisher()
                 }
                 guard coreDataStore.updateTodoItem(id: id, viewData: data) == true else {
-                    return Just(Event.didFailToEditTodoItem(action: action))
+                    return Just(Event.didFailToEditTodoItem(action: action, error: .generic(description: "failed to update todo")))
                         .eraseToAnyPublisher()
                 }
                 items.remove(at: index)
@@ -79,15 +93,13 @@ extension TodoListMainViewModel {
                 .eraseToAnyPublisher()
             case .adding(let viewData):
                 guard !items.contains(where: {$0.id == viewData.id}) else {
-                    return Just(Event.didFailToEditTodoItem(action: action))
+                    return Just(Event.didFailToEditTodoItem(action: action,error: .generic(description: "failed to add todo: this todo is already present")))
                         .eraseToAnyPublisher()
                 }
                 guard
-                    coreDataStore.addTodoItem(
-                        todoItem: viewData
-                    ) == true
+                    coreDataStore.addTodoItem(todoItem: viewData) == true
                 else {
-                    return Just(Event.didFailToEditTodoItem(action: action))
+                    return Just(Event.didFailToEditTodoItem(action: action, error: .generic(description: "failed to add todo")))
                         .eraseToAnyPublisher()
                 }
                 items.append(viewData)
@@ -95,11 +107,11 @@ extension TodoListMainViewModel {
                     .eraseToAnyPublisher()
             case .deleting(let id):
                 guard let index = items.firstIndex(where: { $0.id == id} ) else {
-                    return Just(Event.didFailToEditTodoItem(action: action))
+                    return Just(Event.didFailToEditTodoItem(action: action,error: .generic(description: "failed to delete todo: this todo is not found")))
                         .eraseToAnyPublisher()
                 }
                     guard coreDataStore.deleteTodoItemIfFound(id: id) == true else {
-                    return Just(Event.didFailToEditTodoItem(action: action))
+                    return Just(Event.didFailToEditTodoItem(action: action,error: .generic(description: "failed to delete todo")))
                         .eraseToAnyPublisher()
                 }
                 items.remove(at: index)
