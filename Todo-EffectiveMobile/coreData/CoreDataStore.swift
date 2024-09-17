@@ -181,7 +181,7 @@ extension CoreDataStore {
             Logger.coreData.error("\(#function): user is nil")
             return false
         }
-         asyncContext.performAndWait {
+        asyncContext.performAndWait {
             let _ = CDTodoItem(
                 viewData: todoItem,
                 user: user,
@@ -202,5 +202,19 @@ extension CoreDataStore {
         }
         Logger.coreData.error("\(#function): update failed")
         return false
+    }
+    
+    func updateUser(didLoadFromAPI : Bool) -> Bool {
+        let res = false
+        guard let user = self.user else {
+            Logger.coreData.error("\(#function): user is nil")
+            return false
+        }
+        
+        asyncContext.performAndWait {
+            user.didLoadTodoItemsFromAPI = didLoadFromAPI
+            self.saveAsyncContext()
+        }
+        return true
     }
 }
