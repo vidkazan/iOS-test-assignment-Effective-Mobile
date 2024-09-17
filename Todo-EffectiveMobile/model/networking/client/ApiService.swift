@@ -31,10 +31,10 @@ class ApiService  {
             }
         }
         
-        var urlString : String {
+        var path : String {
             switch self {
                 case .todoList:
-                    return Constants.ApiData.urlBase + "/todos"
+                    return "/todos"
             }
         }
         
@@ -56,7 +56,7 @@ class ApiService  {
             switch type {
             default:
                 var components = URLComponents()
-                components.path = type.urlString
+                components.path = type.path
                 components.host = Constants.ApiData.urlBase
                 components.scheme = "https"
                 components.queryItems = query

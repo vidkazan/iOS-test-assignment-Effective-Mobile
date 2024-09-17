@@ -8,7 +8,7 @@
 import Foundation
 
 struct Constants {
-    static let navigationTitle = "Choo Choo"
+    static let navigationTitle = "Todo List"
     
     struct ApiData {
         static let urlBase = "dummyjson.com"
