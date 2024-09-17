@@ -16,3 +16,24 @@ struct TodoItemDTO : Codable {
     var todo : String?
     var completed : Bool?
 }
+
+extension TodoListDTO {
+    func viewData() -> [TodoItemViewData] {
+        self.todos.compactMap {
+            guard let title = $0.todo,
+                  let isCompleted = $0.completed
+            else {
+                return nil
+            }
+            return .init(
+                id: .init(),
+                title: title,
+                description: "",
+                creationDate: .now,
+                todoDateStart: nil,
+                todoDateEnd: nil,
+                isCompleted: isCompleted
+            )
+        }
+    }
+}
