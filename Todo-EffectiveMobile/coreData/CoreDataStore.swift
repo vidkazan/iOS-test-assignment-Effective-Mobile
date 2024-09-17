@@ -87,6 +87,17 @@ extension CoreDataStore {
         return user
     }
     
+    func didLoadFromAPI() -> Bool? {
+        var result : Bool? = nil
+        if let user = self.fetchUser() {
+            self.asyncContext.performAndWait {
+                result = user.didLoadTodoItemsFromAPI
+            }
+        }
+        return result
+        
+    }
+    
     func fetchTodoItems() -> [TodoItemViewData]? {
         if let res = fetch(CDTodoItem.self)  {
             var items = [TodoItemViewData]()
