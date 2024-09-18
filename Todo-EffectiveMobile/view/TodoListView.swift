@@ -97,7 +97,9 @@ private extension TodoListMainView {
     func list() -> some View {
         ScrollView {
             LazyVStack {
-                ForEach(items.sorted(by: {
+                ForEach(items.filter({
+                    $0.todoDate.isToday
+                }).sorted(by: {
                     $0.creationDate < $1.creationDate
                 }),id:\.id) { item in
                     Button(action: {
@@ -125,10 +127,15 @@ private extension TodoListMainView {
 private extension TodoListMainView {
     func header() -> some View {
         HStack {
+            let date = {
+               let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE, d MMMM"
+                return formatter.string(from: .now)
+            }()
             VStack(alignment: .leading){
                 Text("Today's Task",comment: "TodoListMainView: Header")
                     .font(.system(size: 22,weight: .bold))
-                Text(.now, style: .date)
+                Text(date)
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
             }

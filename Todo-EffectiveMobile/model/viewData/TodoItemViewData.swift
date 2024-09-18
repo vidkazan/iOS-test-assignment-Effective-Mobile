@@ -8,6 +8,34 @@
 import Foundation
 
 struct TodoItemViewData : Hashable {
+    enum TodoItemDate : Hashable {
+        case empty
+        case date(Date)
+        case range(start : Date, end : Date)
+        
+        init(start : Date?, end : Date?) {
+            if let start = start {
+                if let end = end {
+                    self = .range(start: start, end: end)
+                }
+                self = .date(start)
+            } else {
+                self = .empty
+            }
+        }
+        
+        var isToday : Bool {
+            switch self {
+                case .empty:
+                   return true
+                case .date(let date):
+                    return Calendar.current.isDateInToday(date)
+                case .range(let start, let end):
+                    return Calendar.current.isDateInToday(start) || Calendar.current.isDateInToday(end)
+            }
+        }
+    }
+    
     static let defaultItem = Self.init(
         id: .init(),
         title: "New Todo",
@@ -24,6 +52,7 @@ struct TodoItemViewData : Hashable {
     let creationDate : Date
     let todoDateStart : Date?
     let todoDateEnd : Date?
+    let todoDate : Self.TodoItemDate
     let isCompleted : Bool
     
     init(id : UUID, title: String, description: String, creationDate: Date, todoDateStart: Date?, todoDateEnd: Date?, isCompleted: Bool) {
@@ -34,6 +63,7 @@ struct TodoItemViewData : Hashable {
         self.todoDateStart = todoDateStart
         self.todoDateEnd = todoDateEnd
         self.isCompleted = isCompleted
+        self.todoDate = .init(start: todoDateStart, end: todoDateEnd)
     }
 }
 
@@ -46,5 +76,6 @@ extension TodoItemViewData : Identifiable {
         self.todoDateStart = old.todoDateStart
         self.todoDateEnd = old.todoDateEnd
         self.isCompleted = isCompleted
+        self.todoDate = old.todoDate
     }
 }

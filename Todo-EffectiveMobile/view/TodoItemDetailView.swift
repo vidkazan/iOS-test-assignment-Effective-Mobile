@@ -80,7 +80,7 @@ struct TodoItemDetailView : View {
                     if self.pickerState != .empty {
                         DatePicker(
                             selection: $startDate,
-                            in: ...(endDate),
+                            in: (endDate)...,
                             label: {}
                         )
                     }
