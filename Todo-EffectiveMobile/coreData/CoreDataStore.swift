@@ -182,11 +182,30 @@ extension CoreDataStore {
             return false
         }
         asyncContext.performAndWait {
-            let _ = CDTodoItem(
+            user.addToTodoItems(CDTodoItem(
                 viewData: todoItem,
                 user: user,
                 using: self.asyncContext
-            )
+            ))
+            self.saveAsyncContext()
+            res = true
+        }
+        return res
+    }
+    func addTodoItems(todoItems : [TodoItemViewData]) -> Bool {
+        var res = false
+        guard let user = self.user else {
+            Logger.coreData.error("\(#function): user is nil")
+            return false
+        }
+        asyncContext.performAndWait {
+            let _ = todoItems.map{
+                CDTodoItem(
+                    viewData: $0,
+                    user: user,
+                    using: self.asyncContext
+                )
+            }
             self.saveAsyncContext()
             res = true
         }

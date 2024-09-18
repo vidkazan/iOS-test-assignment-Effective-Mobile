@@ -45,7 +45,7 @@ extension CDUser {
     @NSManaged public func removeFromTodoItems(_ value: CDTodoItem)
 
     @objc(addTodoItems:)
-    @NSManaged public func addToTodoItems(_ values: NSSet)
+    @NSManaged public func addToTodoItems(_ values: Set<CDTodoItem>)
 
     @objc(removeTodoItems:)
     @NSManaged public func removeFromTodoItems(_ values: NSSet)

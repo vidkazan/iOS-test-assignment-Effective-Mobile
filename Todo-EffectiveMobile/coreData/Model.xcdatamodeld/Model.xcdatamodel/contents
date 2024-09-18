@@ -6,9 +6,14 @@
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isCompleted" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="todoItems" inverseEntity="CDUser"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="CDUser" representedClassName="CDUser" syncable="YES">
-        <attribute name="didLoadTodoItemsFromAPI" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="didLoadTodoItemsFromAPI" attributeType="Boolean" usesScalarValueType="NO"/>
         <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDTodoItem" inverseName="user" inverseEntity="CDTodoItem"/>
     </entity>
 </model>
