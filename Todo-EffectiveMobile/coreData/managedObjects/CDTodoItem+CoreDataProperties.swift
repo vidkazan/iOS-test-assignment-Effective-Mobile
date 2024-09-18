@@ -53,8 +53,8 @@ extension CDTodoItem {
             let content = Self.TodoItemContent(
                 title: viewData.title,
                 description: viewData.description,
-                todoDateStart: viewData.todoDateStart,
-                todoDateEnd: viewData.todoDateEnd
+                todoDateStart: viewData.todoDate.startDate,
+                todoDateEnd: viewData.todoDate.endDate
             )
             if let content = try? JSONEncoder().encode(content) {
                 self.content = content

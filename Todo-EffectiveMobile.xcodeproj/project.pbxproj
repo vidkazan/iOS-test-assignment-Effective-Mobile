@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D3A32DE2C9AFC7E009757ED /* Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3A32DD2C9AFC7E009757ED /* Modifiers.swift */; };
 		7D5BA8D32C9447C500DE2A4A /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8CF2C9447C500DE2A4A /* CDUser+CoreDataClass.swift */; };
 		7D5BA8D42C9447C500DE2A4A /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */; };
 		7D5BA8D52C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7D3A32DD2C9AFC7E009757ED /* Modifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modifiers.swift; sourceTree = "<group>"; };
 		7D5BA8CF2C9447C500DE2A4A /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7D5BA8D02C9447C500DE2A4A /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7D5BA8D12C9447C500DE2A4A /* CDTodoItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDTodoItem+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 			children = (
 				7D5BA8DA2C94496D00DE2A4A /* Logging.swift */,
 				7DF517E72C99BDFF007CA756 /* CaseIterable+Next.swift */,
+				7D3A32DD2C9AFC7E009757ED /* Modifiers.swift */,
 			);
 			path = helpers;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 				7D5BA8F52C9459FF00DE2A4A /* System.swift in Sources */,
 				7D5BA8F12C94594A00DE2A4A /* TodoListMainViewModel.swift in Sources */,
 				7D5BA8F32C94598200DE2A4A /* Protocols.swift in Sources */,
+				7D3A32DE2C9AFC7E009757ED /* Modifiers.swift in Sources */,
 				7D5BA8DB2C94496D00DE2A4A /* Logging.swift in Sources */,
 				7D922D402C931A1800A9E43F /* ContentView.swift in Sources */,
 				7D922D3E2C931A1800A9E43F /* Todo_EffectiveMobileApp.swift in Sources */,

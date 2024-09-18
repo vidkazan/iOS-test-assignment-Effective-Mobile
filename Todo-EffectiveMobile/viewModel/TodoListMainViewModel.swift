@@ -63,9 +63,16 @@ extension TodoListMainViewModel  {
             self.didLoadFromAPI = false
         }
         
-        init(state : Self,status: Status? = nil, todoItems : [TodoItemViewData]? = nil, didLoadFromAPI : Bool? = nil) {
+        init(
+            state : Self,
+            status: Status? = nil,
+            todoItems : [TodoItemViewData]? = nil,
+            didLoadFromAPI : Bool? = nil
+        ) {
             self.status = status ?? state.status
-            self.todoItems = todoItems ?? state.todoItems
+            self.todoItems = todoItems ?? state.todoItems.filter({
+                $0.todoDate.isToday != false
+            })
             self.didLoadFromAPI = didLoadFromAPI ?? state.didLoadFromAPI
         }
     }

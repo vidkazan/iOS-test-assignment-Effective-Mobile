@@ -12,8 +12,9 @@ import OSLog
 struct TodoListMainView : TodoListView {
     @ObservedObject var vm : TodoListMainViewModel = .init(coreDataStore: .init())
     @State var filterState : FilterState = .All
-    @State var items : [TodoItemViewData] = []
+    @State var currentListItems : [TodoItemViewData] = []
     @State var itemForDetails : TodoItemDetailView.Mode?
+    
     var body: some View {
         VStack {
             header()
@@ -55,10 +56,10 @@ struct TodoListMainView : TodoListView {
         )
         .padding()
         .onChange(of:filterState, perform: {
-            items = $0.todoItems(items: vm.state.todoItems)
+            currentListItems = $0.todoItems(items: vm.state.todoItems)
         })
         .onReceive(vm.$state, perform: {
-            items = filterState.todoItems(items: $0.todoItems)
+            currentListItems = filterState.todoItems(items: $0.todoItems)
         })
     }
 }
@@ -97,9 +98,7 @@ private extension TodoListMainView {
     func list() -> some View {
         ScrollView {
             LazyVStack {
-                ForEach(items.filter({
-                    $0.todoDate.isToday
-                }).sorted(by: {
+                ForEach(currentListItems.sorted(by: {
                     $0.creationDate < $1.creationDate
                 }),id:\.id) { item in
                     Button(action: {

@@ -27,16 +27,17 @@ struct TodoItemDetailView : View {
         self.title = item.title
         self.description = item.description
         self.closeAction = closeAction
-        self.startDate = item.todoDateStart ?? .now
-        self.endDate = item.todoDateEnd ?? .now + 3600
+        self.startDate = item.todoDate.startDate ?? .now
+        self.endDate = item.todoDate.endDate ?? .now
         self.pickerState = {
-            if item.todoDateStart != nil {
-                if item.todoDateEnd != nil {
-                    return .all
-                }
+            switch item.todoDate {
+            case .empty:
+                return .empty
+            case .date:
                 return .startDate
+            case .range:
+                return .all
             }
-            return .empty
         }()
     }
     
@@ -80,7 +81,6 @@ struct TodoItemDetailView : View {
                     if self.pickerState != .empty {
                         DatePicker(
                             selection: $startDate,
-                            in: (endDate)...,
                             label: {}
                         )
                     }

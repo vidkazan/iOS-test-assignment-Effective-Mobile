@@ -17,21 +17,57 @@ struct TodoItemViewData : Hashable {
             if let start = start {
                 if let end = end {
                     self = .range(start: start, end: end)
+                    return
                 }
                 self = .date(start)
+                return
             } else {
                 self = .empty
+                return
             }
         }
         
-        var isToday : Bool {
+        var isToday : Bool? {
             switch self {
                 case .empty:
-                   return true
+                   return nil
                 case .date(let date):
                     return Calendar.current.isDateInToday(date)
                 case .range(let start, let end):
                     return Calendar.current.isDateInToday(start) || Calendar.current.isDateInToday(end)
+            }
+        }
+        
+        var startAndEndAreTheSameDay : Bool? {
+            switch self {
+                case .empty:
+                   return nil
+                case .date(let date):
+                    return nil
+                case .range(let start, let end):
+                    return Calendar.current.component(.day, from: start) == Calendar.current.component(.day, from: end)
+            }
+        }
+        
+        var startDate : Date? {
+            switch self {
+                case .empty:
+                    nil
+                case .date(let date):
+                    date
+                case .range(let start, let end):
+                    start
+            }
+        }
+        
+        var endDate : Date? {
+            switch self {
+                case .empty:
+                    nil
+                case .date:
+                    nil
+                case .range(_, let end):
+                    end
             }
         }
     }
@@ -50,8 +86,6 @@ struct TodoItemViewData : Hashable {
     let title : String
     let description : String
     let creationDate : Date
-    let todoDateStart : Date?
-    let todoDateEnd : Date?
     let todoDate : Self.TodoItemDate
     let isCompleted : Bool
     
@@ -60,21 +94,15 @@ struct TodoItemViewData : Hashable {
         self.title = title
         self.description = description
         self.creationDate = creationDate
-        self.todoDateStart = todoDateStart
-        self.todoDateEnd = todoDateEnd
         self.isCompleted = isCompleted
         self.todoDate = .init(start: todoDateStart, end: todoDateEnd)
     }
-}
-
-extension TodoItemViewData : Identifiable {
+    
     init(old : Self,isCompleted: Bool) {
         self.id = old.id
         self.title = old.title
         self.description = old.description
         self.creationDate = old.creationDate
-        self.todoDateStart = old.todoDateStart
-        self.todoDateEnd = old.todoDateEnd
         self.isCompleted = isCompleted
         self.todoDate = old.todoDate
     }

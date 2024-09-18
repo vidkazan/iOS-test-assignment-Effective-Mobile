@@ -17,35 +17,12 @@ struct TodoItemCellView : TodoListView {
             HStack {
                 VStack(alignment: .leading) {
                     Text(verbatim: item.title)
-                        .font(.system(size: 17,weight: .medium))
                         .strikethrough(item.isCompleted)
+                        .textSize(.big)
                     if !item.description.isEmpty {
                         Text(verbatim: item.description)
-                            .font(.system(size: 12,weight: .medium))
+                            .textSize(.medium)
                             .foregroundStyle(.secondary)
-                    }
-                    if item.todoDateStart != nil {
-                        Divider()
-                        HStack {
-                            if let startDate = item.todoDateStart {
-                                Text(startDate, style: .date)
-                                    .font(.system(size: 12,weight: .medium))
-                                    .foregroundStyle(.secondary)
-                                Text(startDate, style: .time)
-                                    .font(.system(size: 12,weight: .medium))
-                                    .foregroundStyle(.secondary)
-                            }
-                            if let endDate = item.todoDateEnd {
-                                Text(verbatim: " - ")
-                                Text(endDate, style: .date)
-                                    .font(.system(size: 12,weight: .medium))
-                                    .foregroundStyle(.secondary)
-                                Text(endDate, style: .time)
-                                    .font(.system(size: 12,weight: .medium))
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                        }
                     }
                 }
                 Spacer()
@@ -63,6 +40,73 @@ struct TodoItemCellView : TodoListView {
                         .font(.system(size: 22,weight: .medium))
                 })
             }
+            if item.todoDate.startDate != nil {
+                Divider()
+                item.todoDate.todoItemCellDateFooterData()
+            }
         }
     }
 }
+
+extension TodoItemViewData.TodoItemDate {
+    @ViewBuilder func todoItemCellDateFooterData() -> some View {
+        let timeFormatter =  {
+           let formatter = DateFormatter()
+            formatter.dateFormat = "HH:MM"
+            return formatter
+        }()
+        let dayFormatter =  {
+           let formatter = DateFormatter()
+            formatter.dateFormat = "d MMM"
+            return formatter
+        }()
+        HStack(spacing : 5) {
+            switch self {
+                case .empty:
+                    EmptyView()
+                case .date(let date):
+                    Group {
+                        if self.isToday == true {
+                            Text(verbatim: "Today")
+                        } else {
+                            Text(verbatim: dayFormatter.string(from: date))
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                    Text(date, style: .time)
+                        .foregroundStyle(.secondary.opacity(0.6))
+                case .range(let start, let end):
+                    if self.startAndEndAreTheSameDay == true {
+                        Group {
+                            if self.isToday == true {
+                                Text(verbatim: "Today")
+                            } else {
+                                Text(verbatim: dayFormatter.string(from: start))
+                            }
+                        }
+                        .foregroundStyle(.secondary)
+                        Text(start, style: .time)
+                            .foregroundStyle(.secondary.opacity(0.6))
+                        Text("-")
+                            .foregroundStyle(.secondary.opacity(0.6))
+                        Text(end, style: .time)
+                            .foregroundStyle(.secondary.opacity(0.6))
+                    } else {
+                        Text(verbatim: dayFormatter.string(from: start))
+                            .foregroundStyle(.secondary)
+                        Text(start, style: .time)
+                            .foregroundStyle(.secondary.opacity(0.6))
+                        Text("-")
+                            .foregroundStyle(.secondary.opacity(0.6))
+                        Text(verbatim: dayFormatter.string(from: end))
+                            .foregroundStyle(.secondary)
+                        Text(end, style: .time)
+                            .foregroundStyle(.secondary.opacity(0.6))
+                    }
+            }
+            Spacer()
+        }
+        .textSize(.medium)
+    }
+}
+
