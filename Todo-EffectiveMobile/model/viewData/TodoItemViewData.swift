@@ -42,7 +42,7 @@ struct TodoItemViewData : Hashable {
             switch self {
                 case .empty:
                    return nil
-                case .date(let date):
+                case .date:
                     return nil
                 case .range(let start, let end):
                     return Calendar.current.component(.day, from: start) == Calendar.current.component(.day, from: end)
@@ -55,7 +55,7 @@ struct TodoItemViewData : Hashable {
                     nil
                 case .date(let date):
                     date
-                case .range(let start, let end):
+                case .range(let start, _):
                     start
             }
         }

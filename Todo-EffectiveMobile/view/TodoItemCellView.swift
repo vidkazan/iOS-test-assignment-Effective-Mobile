@@ -50,11 +50,6 @@ struct TodoItemCellView : TodoListView {
 
 extension TodoItemViewData.TodoItemDate {
     @ViewBuilder func todoItemCellDateFooterData() -> some View {
-        let timeFormatter =  {
-           let formatter = DateFormatter()
-            formatter.dateFormat = "HH:MM"
-            return formatter
-        }()
         let dayFormatter =  {
            let formatter = DateFormatter()
             formatter.dateFormat = "d MMM"

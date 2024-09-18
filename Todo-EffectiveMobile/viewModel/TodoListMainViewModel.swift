@@ -70,9 +70,7 @@ extension TodoListMainViewModel  {
             didLoadFromAPI : Bool? = nil
         ) {
             self.status = status ?? state.status
-            self.todoItems = todoItems ?? state.todoItems.filter({
-                $0.todoDate.isToday != false
-            })
+            self.todoItems = todoItems ?? state.todoItems
             self.didLoadFromAPI = didLoadFromAPI ?? state.didLoadFromAPI
         }
     }
@@ -216,9 +214,9 @@ extension TodoListMainViewModel {
                 }
             case .editing:
                 switch event {
-                    case let .didEditTodoItem(action, items):
+                    case let .didEditTodoItem(_, items):
                         return .init(state: state, status: .idle,todoItems: items)
-                    case let .didFailToEditTodoItem(action,error):
+                    case let .didFailToEditTodoItem(_,error):
                         return .init(state: state, status: .error(error: error))
                     case .didrequestStopLoading:
                         return .init(state: state, status: .idle)

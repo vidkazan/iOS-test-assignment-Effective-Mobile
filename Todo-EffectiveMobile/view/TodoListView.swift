@@ -12,6 +12,7 @@ import OSLog
 struct TodoListMainView : TodoListView {
     @ObservedObject var vm : TodoListMainViewModel = .init(coreDataStore: .init())
     @State var filterState : FilterState = .All
+    @State var allItems : [TodoItemViewData] = []
     @State var currentListItems : [TodoItemViewData] = []
     @State var itemForDetails : TodoItemDetailView.Mode?
     
@@ -56,10 +57,13 @@ struct TodoListMainView : TodoListView {
         )
         .padding()
         .onChange(of:filterState, perform: {
-            currentListItems = $0.todoItems(items: vm.state.todoItems)
+            currentListItems = $0.todoItems(items: allItems)
         })
-        .onReceive(vm.$state, perform: {
-            currentListItems = filterState.todoItems(items: $0.todoItems)
+        .onReceive(vm.$state, perform: { state in
+            allItems = state.todoItems.filter({
+                $0.todoDate.isToday != false
+            })
+            currentListItems = filterState.todoItems(items: allItems)
         })
     }
 }
@@ -180,7 +184,7 @@ private extension TodoListMainView {
                         Text(filterCase.rawValue)
                             .font(.system(size: 15,weight: self.filterState == filterCase ? .semibold : .medium))
                             .foregroundStyle(self.filterState == filterCase ? .blue : .secondary)
-                        Text(verbatim: "\(filterCase.todoItemsCount(items: vm.state.todoItems))")
+                        Text(verbatim: "\(filterCase.todoItemsCount(items: allItems))")
                             .padding(.horizontal,2)
                             .padding(1)
                             .font(.system(size: 12))
