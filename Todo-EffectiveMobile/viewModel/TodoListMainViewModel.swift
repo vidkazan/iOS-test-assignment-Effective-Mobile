@@ -163,7 +163,7 @@ extension TodoListMainViewModel {
             case .loadingFromDB:
                 switch event {
                     case let .didLoadInitialData(items, didLoadFromAPI):
-                        return .init(state: state, status: .validatingIfLoadedFromAPI,todoItems: items)
+                        return .init(state: state, status: .validatingIfLoadedFromAPI,todoItems: items,didLoadFromAPI: didLoadFromAPI)
                     case .didFailToLoadInitialData(let error):
                         return .init(state: state, status: .error(error: error))
                     default:

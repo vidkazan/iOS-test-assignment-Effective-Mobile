@@ -40,7 +40,9 @@ extension TodoListMainViewModel {
             return ApiService(client: ApiClient()).fetch(TodoListDTO.self, type: .todoList)
             .map {
                 coreDataStore.updateUser(didLoadFromAPI: true)
-                return Event.didLoadFromAPI(items: $0.viewData())
+                let viewData = $0.viewData()
+                coreDataStore.addTodoItems(todoItems: viewData)
+                return Event.didLoadFromAPI(items: viewData)
             }
             .catch {
                return Just(Event.didFailToLoadFromAPI(error: $0))
@@ -56,7 +58,7 @@ extension TodoListMainViewModel {
             }
             guard let didLoadFromAPI = coreDataStore.didLoadFromAPI() else {
                 Logger.loadingsInitialData.info("\(#function): user is nil: loading default data")
-                return Just(Event.didLoadInitialData(items: [], didLoadFromAPI: false))
+                return Just(Event.didLoadInitialData(items: [], didLoadFromAPI: true))
                     .eraseToAnyPublisher()
             }
             guard let items = coreDataStore.fetchTodoItems() else {
