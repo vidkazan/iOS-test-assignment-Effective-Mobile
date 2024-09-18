@@ -29,11 +29,6 @@ struct TodoListMainView : TodoListView {
         }, set: { _ in
         }), actions: {
             Button(action: {
-                vm.send(event: .didRequestTodoListFromAPI)
-            }, label: {
-                Label("Try to repeat", systemImage: "xmark.icloud.fill")
-            })
-            Button(action: {
                 vm.send(event: .didrequestStopLoading)
             }, label: {
                 Label("Close", systemImage: "xmark.icloud.fill")
@@ -104,7 +99,7 @@ private extension TodoListMainView {
             LazyVStack {
                 ForEach(items.sorted(by: {
                     $0.creationDate < $1.creationDate
-                }),id:\.creationDate) { item in
+                }),id:\.id) { item in
                     Button(action: {
                         itemForDetails = .edit(item: item)
                     }, label: {

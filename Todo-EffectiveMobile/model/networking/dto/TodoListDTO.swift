@@ -12,7 +12,6 @@ struct TodoListDTO : Codable {
 }
 
 struct TodoItemDTO : Codable {
-    var id : Int?
     var todo : String?
     var completed : Bool?
 }
