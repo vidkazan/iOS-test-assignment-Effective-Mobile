@@ -15,6 +15,7 @@ extension CDUser {
         managedObjectContext.performAndWait {
             let user = CDUser(entity: CDUser.entity(), insertInto: managedObjectContext)
             do {
+                user.didLoadTodoItemsFromAPI = false
                 try managedObjectContext.save()
                 return user
             } catch {

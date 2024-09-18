@@ -41,8 +41,11 @@ extension TodoListMainViewModel {
             .map {
                 coreDataStore.updateUser(didLoadFromAPI: true)
                 let viewData = $0.viewData()
-                coreDataStore.addTodoItems(todoItems: viewData)
-                return Event.didLoadFromAPI(items: viewData)
+                if coreDataStore.addTodoItems(todoItems: viewData) == true {
+                    return Event.didLoadFromAPI(items: viewData + state.todoItems)
+                } else {
+                    return Event.didFailToLoadFromAPI(error: ApiError.generic(description: "failed to received form API data to DB"))
+                }
             }
             .catch {
                return Just(Event.didFailToLoadFromAPI(error: $0))
